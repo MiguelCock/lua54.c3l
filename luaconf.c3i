@@ -13,7 +13,7 @@ const FLOAT_DOUBLE = 2;
 const FLOAT_LONGDOUBLE = 3;
 
 
-const BUFFERSIZE = (int)(16 * (void*).sizeof * LuaNumber.sizeof);
+const BUFFERSIZE = 1024;
 
 /*
 ** LUA_PATH_SEP is the character that separates templates in a path.

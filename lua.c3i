@@ -47,20 +47,13 @@ const RIDX_MAINTHREAD = 1;
 const RIDX_GLOBALS = 	2;
 const RIDX_LAST = 		RIDX_GLOBALS;
 
-/* type of numbers in Lua */
-alias LuaNumber @if(uptr.sizeof == 4) = float;
-alias LuaNumber @if(uptr.sizeof == 8) = double;
-
-/* type for integer functions */
-alias LuaInteger @if(uptr.sizeof == 4) = int;
-alias LuaInteger @if(uptr.sizeof == 8) = long;
-
-/* unsigned integer type */
-alias LuaUnsigned @if(uptr.sizeof == 4) = uint;
-alias LuaUnsigned @if(uptr.sizeof == 8) = ulong;
+/* 64-bit targets shipped by Yun. */
+alias LuaNumber = double;
+alias LuaInteger = long;
+alias LuaUnsigned = ulong;
 
 /* type for continuation-function contexts */
-alias LuaKContext = isz;
+alias LuaKContext = long;
 
 /*
 ** Type for C functions registered with Lua
@@ -75,8 +68,8 @@ alias LuaKFunction = fn int (LuaState* l, int status, LuaKContext ctx);
 /*
 ** Type for functions that read/write blocks when loading/dumping Lua chunks
 */
-alias LuaReader = fn ZString (LuaState* l, void* ud, usz sz);
-alias LuaWriter = fn int (LuaState* l, void* p, usz sz, void* ud);
+alias LuaReader = fn ZString (LuaState* l, void* ud, usz size);
+alias LuaWriter = fn int (LuaState* l, void* p, usz size, void* ud);
 
 /*
 ** Type for memory-allocation functions
@@ -195,7 +188,7 @@ extern fn int rawgeti		(LuaState* l, int idx, LuaInteger n) 	@cname("lua_rawgeti
 extern fn int rawgetp		(LuaState* l, int idx, void* p) 		@cname("lua_rawgetp");
 
 extern fn void 	createtable		(LuaState* l, int narr, int nrec) 	@cname("lua_createtable");
-extern fn void* newuserdatauv	(LuaState* l, usz sz, int nuvalue) 	@cname("lua_newuserdatauv");
+extern fn void* newuserdatauv	(LuaState* l, usz size, int nuvalue) 	@cname("lua_newuserdatauv");
 extern fn int 	getmetatable	(LuaState* l, int objindex) 		@cname("lua_getmetatable");
 extern fn int 	getiuservalue	(LuaState* l, int idx, int n) 		@cname("lua_getiuservalue");
 
@@ -370,7 +363,7 @@ struct LuaDebug {
   ZString namewhat;	/* (n) 'global', 'local', 'field', 'method' */
   ZString what;	/* (S) 'Lua', 'C', 'main', 'tail' */
   ZString source;	/* (S) */
-  isz srclen;	/* (S) */
+  long srclen;	/* (S) */
   int currentline;	/* (l) */
   int linedefined;	/* (S) */
   int lastlinedefined;	/* (S) */

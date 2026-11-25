@@ -5,24 +5,24 @@ struct LuaLReg {
   LuaCFunction func;
 }
 
-const NUMSIZES	= LuaInteger.sizeof*16 + LuaNumber.sizeof;
+const NUMSIZES = 136;
 
-extern fn void checkversion(LuaState* l, LuaNumber ver = VERSION_NUM, isz sz = NUMSIZES) @cname("luaL_checkversion_");
+extern fn void checkversion(LuaState* l, LuaNumber ver = VERSION_NUM, long size = NUMSIZES) @cname("luaL_checkversion_");
 
 extern fn int		l_getmetafield		(LuaState* l, int arg, ZString e) 				@cname("luaL_getmetafield");
 extern fn int 		l_callmeta			(LuaState* l, int arg, ZString e) 				@cname("luaL_callmeta");
-extern fn ZString 	l_tolstring			(LuaState* l, int idx, isz* e) 					@cname("luaL_tolstring");
+extern fn ZString 	l_tolstring			(LuaState* l, int idx, long* e) 					@cname("luaL_tolstring");
 extern fn int 		l_argerror			(LuaState* l, int arg, ZString e) 				@cname("luaL_argerror");
 extern fn int 		l_typeerror			(LuaState* l, int arg, ZString tname) 			@cname("luaL_typeerror");
-extern fn ZString 	l_checklstring		(LuaState* l, int arg, isz* e) 					@cname("luaL_checklstring");
-extern fn ZString 	l_optlstring		(LuaState* l, int arg, ZString def, isz* len) 	@cname("luaL_optlstring");
+extern fn ZString 	l_checklstring		(LuaState* l, int arg, long* e) 					@cname("luaL_checklstring");
+extern fn ZString 	l_optlstring		(LuaState* l, int arg, ZString def, long* len) 	@cname("luaL_optlstring");
 extern fn LuaNumber l_checknumber		(LuaState* l, int arg) 							@cname("luaL_checknumber");
 extern fn LuaNumber l_optnumber			(LuaState* l, int arg, LuaNumber def) 			@cname("luaL_optnumber");
 
 extern fn LuaInteger l_checkinteger	(LuaState* l, int arg, ZString e)	@cname("luaL_checkinteger");
 extern fn LuaInteger l_optinteger	(LuaState* l, int arg, ZString e) 	@cname("luaL_optinteger");
 
-extern fn void 	l_checkstack	(LuaState* l, int sz, ZString msg) 		@cname("luaL_checkstack");
+extern fn void 	l_checkstack	(LuaState* l, int size, ZString msg) 		@cname("luaL_checkstack");
 extern fn void 	l_checktype		(LuaState* l, int arg, int t) 			@cname("luaL_checktype");
 extern fn void 	l_checkany		(LuaState* l, int arg) 					@cname("luaL_checkany");
 
@@ -51,7 +51,7 @@ macro int 		l_loadfile	(LuaState* l, ZString f) { return lua::l_loadfilex(l, f, 
 
 
 extern fn int l_loadstring	(LuaState* l, ZString s) @cname("luaL_loadstring");
-extern fn int l_loadbufferx	(LuaState* l, ZString buff, usz sz, ZString name, ZString mode) @cname("luaL_loadbufferx");
+extern fn int l_loadbufferx	(LuaState* l, ZString buff, usz size, ZString name, ZString mode) @cname("luaL_loadbufferx");
 
 extern fn LuaState* l_newstate() @cname("luaL_newstate");
 
@@ -85,7 +85,7 @@ macro int l_dostring(LuaState* l, s) { return (int)(lua::l_loadstring(l, s) || l
 macro l_getmetatable(LuaState* l, n) { return lua::getfield(l, REGISTRYINDEX, n); }
 
 macro l_opt(LuaState* l,f,n,d) { return lua::isnoneornil(l, n) ? d : f(l, n);}
-macro int l_loadbuffer(LuaState* l, ZString s, usz sz, ZString name) { return l_loadbufferx(l, s, sz, name, null); }
+macro int l_loadbuffer(LuaState* l, ZString s, usz size, ZString name) { return l_loadbufferx(l, s, size, name, null); }
 macro l_pushfail(LuaState* l) { return lua::pushnil(l);}
 
 /*
@@ -118,13 +118,13 @@ macro void l_addsize(LuaLBuffer* b, usz s) { b.n += s; }
 macro void l_buffsub(LuaLBuffer* b, usz s) { b.n -= s; }
 
 extern fn void 	l_buffinit			(LuaState* l, LuaLBuffer* b) 		 @cname("luaL_buffinit");
-extern fn char* l_prepbuffsize		(LuaLBuffer* b, usz sz) 			 @cname("luaL_prepbuffsize");
+extern fn char* l_prepbuffsize		(LuaLBuffer* b, usz size) 			 @cname("luaL_prepbuffsize");
 extern fn void 	l_addlstring		(LuaLBuffer* b, ZString s, usz l) 	 @cname("luaL_addlstring");
 extern fn void 	l_addstring			(LuaLBuffer* b, ZString s) 			 @cname("luaL_addstring");
 extern fn void 	l_addvalue			(LuaLBuffer* b) 					 @cname("luaL_addvalue");
 extern fn void 	l_pushresult		(LuaLBuffer* b) 					 @cname("luaL_pushresult");
-extern fn void 	l_pushresultsize	(LuaLBuffer* b, usz sz) 			 @cname("luaL_pushresultsize");
-extern fn char* l_buffinitsize		(LuaState* l, LuaLBuffer* b, usz sz) @cname("luaL_buffinitsize");
+extern fn void 	l_pushresultsize	(LuaLBuffer* b, usz size) 			 @cname("luaL_pushresultsize");
+extern fn char* l_buffinitsize		(LuaState* l, LuaLBuffer* b, usz size) @cname("luaL_buffinitsize");
 
 macro char* l_prepbuffer(LuaLBuffer* b) { return b.l_prepbuffsize(BUFFERSIZE); }
 
